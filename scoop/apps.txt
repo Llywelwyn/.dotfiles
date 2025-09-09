@@ -1,0 +1,14 @@
+curl
+dotnet-sdk
+fd
+FiraCode-NF
+fzf
+grep
+lazygit
+lua
+luarocks
+neovim
+python
+ripgrep
+terminal-icons
+7zip
