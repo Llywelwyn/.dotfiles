@@ -36,4 +36,3 @@ if (Get-Command curl.exe -ErrorAction SilentlyContinue | Test-Path) {
 } else {
     ${function:gurl} = { curl -TransferEncoding GZip }
 }
-

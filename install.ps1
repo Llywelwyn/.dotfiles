@@ -14,14 +14,23 @@ function Write-Section($text) {
   Write-Host ""
 }
 
+$cols = @('Red', 'DarkYellow', 'Green', 'Blue', 'Magenta')
+$script:colIndex = Get-Random -Minimum 0 -Maximum $cols.Count
+
+function Write-Rainbow($text) {
+  $col = $cols[$colIndex % $cols.Count]
+  Write-Host $text -ForegroundColor $col  
+  $script:colIndex++
+}
+
 Write-Section "setting up scoop !"
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-  Write-Host "~ getting scoop!"
+  Write-Rainbow "~ getting scoop!"
   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
   iwr -useb get.scoop.sh | iex
 } else {
-  Write-Host "~ found scoop, updating!"
+  Write-Rainbow "~ found scoop, updating!"
   scoop update
 }
 
@@ -32,10 +41,10 @@ $buckets = scoop bucket list | ForEach-Object { $_.Name }
 Get-Content "./scoop/buckets.txt" | ForEach-Object {
   $bucket = $_.Trim()
   if ($bucket -and -not ($buckets -contains $bucket)) {
-    Write-Host "~ adding bucket: $bucket"
+    Write-Rainbow "~ adding bucket: $bucket"
     scoop bucket add $bucket
   } else {
-    Write-Host "~ found bucket: $bucket"
+    Write-Rainbow "~ found bucket: $bucket"
   }
 }
 
@@ -47,34 +56,58 @@ $apps = $raw | Where-Object { $_ -is [pscustomobject] } | ForEach-Object { $_.Na
 Get-Content "./scoop/apps.txt" | ForEach-Object {
   $app = $_.Trim()
   if ($app -and -not ($apps -contains $app)) {
-    Write-Host "~ installing app: $app"
+    Write-Rainbow "~ installing app: $app"
     scoop install $app
   } else {
-    Write-Host "~ found app: $app"
+    Write-Rainbow "~ found app: $app"
   }
 }
 
-Write-Host "~ all finished with scoop"
+Write-Rainbow "~ all finished with scoop"
+
+if (-not (Get-Module -ListAvailable posh-git)) {
+  Write-Section "adding posh-git"
+  Write-Rainbow "~ updating nuget for current user"
+  Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force *>&1 | Out-Null
+  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+  Write-Rainbow "~ installin posh-git module"
+  Install-Module posh-git -Scope CurrentUser -Force
+} else {
+  Write-Rainbow "~ you've already got posh-git available, nice !"
+}
 
 Write-Section "copying powershell profile !"
 
 Copy-Item ./powershell/profile.ps1 $PROFILE -Force
 
+Write-Rainbow "~ setting up alises for nav"
+Write-Rainbow "  ~, .., dt, docs, dl, nvimc"
+Write-Rainbow "~ bash aliases"
+Write-Rainbow "  time -> Measure-Command"
+Write-Rainbow "  vi, vim -> nvim"
+Write-Rainbow "  wget, curl, gurl"
+Write-Rainbow "  ls, l, la, lsd"
+
+Add-PoshGitToProfile
+
+Write-Rainbow "~ added posh-git to profile"
+
 $dotsourced = $MyInvocation.InvocationName -eq '.'
 
 if ($dotsourced) {
   . $PROFILE
-  Write-Host "~ reloaded profile"
+  Write-Rainbow "~ reloaded profile"
 }
 
-Write-Section "nvim"
+Write-Section "optional cool nvim config"
 
 $ans = Read-Host "~ wanna use llywelwyn/.nvim config? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
+  Write-Host "~ cloning !" -ForegroundColor Green
   . ./nvim/config.ps1
 }
 
-Write-Section "git global config"
+Write-Section "while im here lemme do ur git config"
 
 $ans = Read-Host "~ wanna set up git? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
@@ -83,7 +116,11 @@ if ($ans -eq '' -or $ans -match '^(y|yes)$') {
 
 if (-not $dotsourced) {
   Write-Section "you need to do one more step!!!"
-  Write-Host "write '. `$PROFILE' to reload your profile manually"
+  Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Red
+  Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor DarkYellow
+  Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Green
+  Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Blue
+  Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Magenta
 }
 
 Write-Host @"
