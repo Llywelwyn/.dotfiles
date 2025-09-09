@@ -1,4 +1,8 @@
-Write-Host "setting up scoop!"
+Write-Host "~ welcome to my cool dotfiles !"
+
+. ./git/config.ps1
+
+Write-Host "~ setting up scoop!"
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
   Write-Host "~ getting scoop!"
