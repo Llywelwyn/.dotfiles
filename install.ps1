@@ -1,8 +1,20 @@
-Write-Host "~ welcome to my cool dotfiles !"
+Write-Host @"
 
-. ./git/config.ps1
+   /\_/\   mr cat says:
+  ( o.o )      welcome to lewis' cool dotfile installer !
+   > ^ <  
+"@ -ForegroundColor Magenta
 
-Write-Host "~ setting up scoop!"
+function Write-Section($text) {
+  $width = 40 
+  Write-Host ""
+  Write-Host ("~=" * ($width/2)) -ForegroundColor DarkGray
+  Write-Host ("= " + $text.PadRight($width - 4) + " =") -ForegroundColor Green
+  Write-Host ("~=" * ($width/2)) -ForegroundColor DarkGray
+  Write-Host ""
+}
+
+Write-Section "setting up scoop !"
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
   Write-Host "~ getting scoop!"
@@ -12,6 +24,8 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
   Write-Host "~ found scoop, updating!"
   scoop update
 }
+
+Write-Section "fetching scoop buckets !"
 
 $buckets = scoop bucket list | ForEach-Object { $_.Name }
 
@@ -24,6 +38,8 @@ Get-Content "./scoop/buckets.txt" | ForEach-Object {
     Write-Host "~ found bucket: $bucket"
   }
 }
+
+Write-Section "getting scoop apps !"
 
 $raw = & { scoop list *>&1 }
 $apps = $raw | Where-Object { $_ -is [pscustomobject] } | ForEach-Object { $_.Name }
@@ -40,19 +56,41 @@ Get-Content "./scoop/apps.txt" | ForEach-Object {
 
 Write-Host "~ all finished with scoop"
 
-Write-Host "~ copying powershell profile!"
+Write-Section "copying powershell profile !"
+
 Copy-Item ./powershell/profile.ps1 $PROFILE -Force
 
-if ($MyInvocation.InvocationName -eq '.') {
+$dotsourced = $MyInvocation.InvocationName -eq '.'
+
+if ($dotsourced) {
   . $PROFILE
   Write-Host "~ reloaded profile"
-} else {
-  Write-Host "~ u didn't run this dot-sourced"
-  Write-Host "~ that's okay"
-  Write-Host "~ reload manually"
-  Write-Host "             with this"
-  Write-Host "                    command:"
-  Write-Host "                            . `$PROFILE"
 }
 
-. $PROFILE
+Write-Section "nvim"
+
+$ans = Read-Host "~ wanna use llywelwyn/.nvim config? (y/n)"
+if ($ans -eq '' -or $ans -match '^(y|yes)$') {
+  . ./nvim/config.ps1
+}
+
+Write-Section "git global config"
+
+$ans = Read-Host "~ wanna set up git? (y/n)"
+if ($ans -eq '' -or $ans -match '^(y|yes)$') {
+  . ./git/config.ps1
+}
+
+if (-not $dotsourced) {
+  Write-Section "you need to do one more step!!!"
+  Write-Host "write '. `$PROFILE' to reload your profile manually"
+}
+
+Write-Host @"
+                                   _________
+  and we're all done    /\_/\     / bye for \
+  say bye to cat       ( o.o )  <{   meow!~  }
+                        > ^ <     \_________/
+  2025. lewis wynne
+
+"@ -ForegroundColor Magenta
