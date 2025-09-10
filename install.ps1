@@ -8,14 +8,14 @@ Write-Host @"
 function Write-Typewriter {
     param(
         [string]$Text,
-        [int]$DelayMs = 10  # milliseconds between each character
+        [int]$DelayMs = 10
     )
 
     foreach ($char in $Text.ToCharArray()) {
         Write-Host -NoNewline $char
         Start-Sleep -Milliseconds $DelayMs
     }
-    Write-Host ""  # newline at the end
+    Write-Host ""
 }
 
 function Write-Section($text) {
@@ -174,3 +174,4 @@ Write-Host @"
   2025. lewis wynne
 
 "@ -ForegroundColor Magenta
+
