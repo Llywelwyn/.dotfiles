@@ -101,6 +101,7 @@ Write-Typewriter "there's also a powershell profile, and a" -DelayMs 10
 Write-Typewriter "couple optional extras" -DelayMs 10
 Write-Host "`n~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=`n" -ForegroundColor DarkGray
 
+Write-Host "[Y]es! - [N]o! - [A]ccept all`n" -ForegroundColor Green
 $config_nvim = Ask-User "~ want my nvim config?"
 $config_git  = Ask-User "~ configure git?"
 $config_posh = Ask-User "~ what about posh-git?"
