@@ -9,6 +9,7 @@ ${function:dt} = { Set-Location ~\Desktop }
 ${function:docs} = { Set-Location ~\Documents }
 ${function:dl} = { Set-Location ~\Downloads }
 ${function:nvimc} = { Set-Location $env:LOCALAPPDATA\nvim }
+${function:dotfiles} = { Set-Location $env:DOTFILES }
 
 Set-Alias time Measure-Command
 Set-Alias vi nvim

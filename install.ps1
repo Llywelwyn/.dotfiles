@@ -23,6 +23,8 @@ function Write-Rainbow($text) {
   $script:colIndex++
 }
 
+$env:DOTFILES = $PSScriptRoot
+
 Write-Section "setting up scoop !"
 
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
@@ -38,7 +40,7 @@ Write-Section "fetching scoop buckets !"
 
 $buckets = scoop bucket list | ForEach-Object { $_.Name }
 
-Get-Content "./scoop/buckets.txt" | ForEach-Object {
+Get-Content "$PSScriptRoot/scoop/buckets.txt" | ForEach-Object {
   $bucket = $_.Trim()
   if ($bucket -and -not ($buckets -contains $bucket)) {
     Write-Rainbow "~ adding bucket: $bucket"
@@ -53,7 +55,7 @@ Write-Section "getting scoop apps !"
 $raw = & { scoop list *>&1 }
 $apps = $raw | Where-Object { $_ -is [pscustomobject] } | ForEach-Object { $_.Name }
 
-Get-Content "./scoop/apps.txt" | ForEach-Object {
+Get-Content "$PSScriptRoot/scoop/apps.txt" | ForEach-Object {
   $app = $_.Trim()
   if ($app -and -not ($apps -contains $app)) {
     Write-Rainbow "~ installing app: $app"
@@ -76,31 +78,42 @@ if (-not (Get-Module -ListAvailable posh-git)) {
   Write-Rainbow "~ you've already got posh-git available, nice !"
 }
 
-Write-Section "adding some lazygit custom cmds"
+Write-Section "initing lazygit config"
 
 if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
   New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
   Write-Rainbow "~ creating dir"
 }
 
-Copy-Item ./lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
-Write-Rainbow "~ copying over config"
+Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
+Write-Rainbow "~ added custom commands"
+Write-Rainbow "  'C'      ->   to conventional commits"
+Write-Rainbow "  'b'      ->   to prune deleted remotes"
+
 
 Write-Section "copying powershell profile !"
 
-Copy-Item ./powershell/profile.ps1 $PROFILE -Force
+Copy-Item $PSScriptRoot/powershell/profile.ps1 $PROFILE -Force
 
-Write-Rainbow "~ setting up alises for nav"
-Write-Rainbow "  ~, .., dt, docs, dl, nvimc"
+Write-Rainbow "~ setting up aliases for nav"
+Write-Rainbow "    docs   ->   go to documents"
+Write-Rainbow "    dt     ->   go to desktop"
+Write-Rainbow "    dl     ->   go to downloads"
+Write-Rainbow "    nvimc  ->   go to nvim config"
+Write-Rainbow "    ..     ->   go up a dir (..., etc. to go up multiple)"
+Write-Rainbow "    ~      ->   go home"
 Write-Rainbow "~ bash aliases"
-Write-Rainbow "  time -> Measure-Command"
-Write-Rainbow "  vi, vim -> nvim"
-Write-Rainbow "  wget, curl, gurl"
-Write-Rainbow "  ls, l, la, lsd"
+Write-Rainbow "    time   ->   Measure-Command"
+Write-Rainbow "    vi,vim ->   nvim"
+Write-Rainbow "    ls     ->   list contents (with colour)"
+Write-Rainbow "    l      ->   list contents (long)"
+Write-Rainbow "    la     ->   list contents (including hidden files)"
+Write-Rainbow "    lsd    ->   list directories"
+Write-Rainbow "    also wget, curl, and gurl"
 
 Add-PoshGitToProfile
 
-Write-Rainbow "~ added posh-git to profile"
+Write-Rainbow "~ added posh-git import"
 
 $dotsourced = $MyInvocation.InvocationName -eq '.'
 
@@ -114,14 +127,14 @@ Write-Section "optional cool nvim config"
 $ans = Read-Host "~ wanna use llywelwyn/.nvim config? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
   Write-Host "~ cloning !" -ForegroundColor Green
-  . ./nvim/config.ps1
+  . $PSScriptRoot/nvim/config.ps1
 }
 
 Write-Section "while im here lemme do ur git config"
 
 $ans = Read-Host "~ wanna set up git? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
-  . ./git/config.ps1
+  . $PSScriptRoot/git/config.ps1
 }
 
 if (-not $dotsourced) {
