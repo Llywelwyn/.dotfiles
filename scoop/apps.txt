@@ -13,4 +13,5 @@ neovim
 python
 ripgrep
 terminal-icons
+wezterm-nightly
 7zip

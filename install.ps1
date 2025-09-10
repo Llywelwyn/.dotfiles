@@ -167,6 +167,20 @@ if ($config_games) {
 
 Write-Rainbow "~ all finished with scoop"
 
+if (-not (Test-Path $HOME/.config)) {
+  New-Item -ItemType Directory -Path $HOME/.config | Out-Null
+  Write-Rainbow "~ creating $HOME/.config dir"
+}
+
+if (-not (Test-Path $HOME/.config/wezterm)) {
+  New-Item -ItemType Directory -Path $HOME/.config/wezterm | Out-Null
+  Write-Rainbow "~ creating $HOME/.config/wezterm dir"
+}
+
+Write-Rainbow "~ copying .wezterm.lua to $HOME/.config/wezterm/"
+Copy-Item $PSScriptRoot/wezterm/wezterm.lua $HOME/.config/wezterm/wezterm.lua -Force
+Copy-Item $PSScriptRoot/wezterm/keys.lua $HOME/.config/wezterm/keys.lua -Force
+
 if ($config_posh) {
   Write-Section "[optional] posh-git"
   if (-not (Get-Module -ListAvailable posh-git)) {
