@@ -104,6 +104,7 @@ Write-Host "`n~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=`n" -ForegroundColor DarkG
 $config_nvim = Ask-User "~ want my nvim config?"
 $config_git  = Ask-User "~ configure git?"
 $config_posh = Ask-User "~ what about posh-git?"
+$config_games = Ask-User "~ my fave roguelikes?"
 
 Write-Section "setting up scoop !"
 
@@ -138,10 +139,28 @@ $apps = $raw | Where-Object { $_ -is [pscustomobject] } | ForEach-Object { $_.Na
 Get-Content "$PSScriptRoot/scoop/apps.txt" | ForEach-Object {
   $app = $_.Trim()
   if ($app -and -not ($apps -contains $app)) {
-    Write-Rainbow "~ installing app: $app"
+    Write-Rainbow "~ installing $app"
     scoop install $app
   } else {
-    Write-Rainbow "~ found app: $app"
+    Write-Rainbow "~ found $app, skipping"
+  }
+}
+
+if ($config_games) {
+  Write-Section "[optional] my fave games"
+  if (-not ($buckets -contains "games")) {
+    Write-Rainbow "~ adding bucket: games"
+  } else {
+    Write-Rainbow "~ found bucket: games"
+  }
+  Get-Content "$PSScriptRoot/scoop/games.txt" | ForEach-Object {
+    $app = $_.Trim()
+    if ($app -and -not ($apps -contains $app)) {
+      Write-Rainbow "~ installing $app"
+      scoop install $app
+    } else {
+      Write-Rainbow "~ found $app, skipping"
+    }
   }
 }
 
