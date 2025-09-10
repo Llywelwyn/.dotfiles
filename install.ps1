@@ -143,7 +143,8 @@ Get-Content "$PSScriptRoot/scoop/apps.txt" | ForEach-Object {
     Write-Rainbow "~ installing $app"
     scoop install $app
   } else {
-    Write-Rainbow "~ found $app, skipping"
+    Write-Rainbow "~ found $app, updating"
+    scoop update $app
   }
 }
 
@@ -160,7 +161,8 @@ if ($config_games) {
       Write-Rainbow "~ installing $app"
       scoop install $app
     } else {
-      Write-Rainbow "~ found $app, skipping"
+      Write-Rainbow "~ found $app, updating"
+      scoop update $app
     }
   }
 }
