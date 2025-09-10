@@ -1,48 +1,109 @@
-Write-Host @"
-
-   /\_/\   mr cat says:
-  ( o.o )      welcome to lewis' cool dotfile installer !
-   > ^ <  
-"@ -ForegroundColor Magenta
-
 function Write-Typewriter {
-    param(
-        [string]$Text,
-        [int]$DelayMs = 10
-    )
+  param(
+      [string]$Text,
+      [int]$DelayMs = 10,
+      [switch]$NoNewLine,
+      [switch]$Rainbow
+  )
 
-    foreach ($char in $Text.ToCharArray()) {
+  foreach ($char in $Text.ToCharArray()) {
+      if (-not $Rainbow) {
         Write-Host -NoNewline $char
-        Start-Sleep -Milliseconds $DelayMs
-    }
+      } else {
+          Write-Rainbow $char -NoNewLine 
+        }
+      Start-Sleep -Milliseconds $DelayMs
+  }
+  if (-not $NoNewLine) {
     Write-Host ""
+  }
 }
 
-function Write-Section($text) {
-    $width = 40
-    Write-Host ""
-    Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
+function Write-Section {
+  param(
+    [string]$text,
+    [switch]$Rainbow
+  )
+  $width = 40
+  Write-Host ""
+  Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
+  $textLength = $text.Length
+  $innerWidth = $width - 4  # space for "= " and " ="
+  $leftPadding = [math]::Floor(($innerWidth - $textLength) / 2)
+  $rightPadding = $innerWidth - $textLength - $leftPadding
 
-    $textLength = $text.Length
-    $innerWidth = $width - 4  # space for "= " and " ="
-    $leftPadding = [math]::Floor(($innerWidth - $textLength) / 2)
-    $rightPadding = $innerWidth - $textLength - $leftPadding
-
-    $line = "= " + (" " * $leftPadding) + $text + (" " * $rightPadding) + " ="
+  $line = "= " + (" " * $leftPadding) + $text + (" " * $rightPadding) + " ="
+  if (-not $Rainbow) {
     Write-Typewriter $line
+  } else {
+    Write-Typewriter $line -Rainbow
+  }
 
-    Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
-    Write-Host ""
+  Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
+  Write-Host ""
 }
 
 $cols = @('Red', 'DarkYellow', 'Green', 'Blue', 'Magenta')
 $script:colIndex = Get-Random -Minimum 0 -Maximum $cols.Count
 
-function Write-Rainbow($text) {
+function Write-Rainbow {
+  param(
+    [string]$text,
+    [switch]$NoNewLine
+  )
   $col = $cols[$colIndex % $cols.Count]
-  Write-Host $text -ForegroundColor $col  
+  if (-not $NoNewLine) {
+    Write-Host $text -ForegroundColor $col
+  } else {
+    Write-Host $text -ForegroundColor $col -NoNewLine
+  }
   $script:colIndex++
 }
+
+
+$global:allSelected = $false
+
+function Ask-User {
+    param(
+      [string]$Message,
+      [int]$Pad = 37
+    )
+
+    Write-Typewriter $Message.PadRight($Pad) -NoNewline -Rainbow
+    if ($global:allSelected) { Write-Host "[x]" -ForegroundColor Green; return $true }
+    do {
+        $key = [System.Console]::ReadKey($true).Key
+        switch ($key) {
+            "Y" { Write-Host "[x]" -ForegroundColor Green; return $true }
+            "N" { Write-Host "[-]" -ForegroundColor Red; return $false }
+            "A" { Write-Host "[x]" -ForegroundColor Green; $global:allSelected = $true; return $true }
+        }
+    } while ($true)
+}
+Write-Host @"
+
+ /\_/\   mr cat says:
+( o.o )      " welcome to lewis' 
+ > ^ <         cool dotfile installer! "   
+"@ -ForegroundColor Magenta
+
+Write-Host "`n~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=`n" -ForegroundColor DarkGray
+Write-Typewriter "this script will run you through a basic" -DelayMs 10
+Write-Typewriter "set-up, by using scoop to install all of" -DelayMs 10
+Write-Typewriter "the stuff in scoop/apps.txt`n" -DelayMs 10
+Write-Typewriter "if you don't want some of the stuff in" -DelayMs 10
+Write-Typewriter "there, just delete it from the txt file`n" -DelayMs 10
+Write-Typewriter "if you want more stuff, https://scoop.sh" -DelayMs 10
+Write-Typewriter "has a full list. just search there and u" -DelayMs 10
+Write-Typewriter "can add any of the app names to apps.txt" -DelayMs 10
+Write-Typewriter "and they'll get installed too`n" -DelayMs 10
+Write-Typewriter "there's also a powershell profile, and a" -DelayMs 10
+Write-Typewriter "couple optional extras" -DelayMs 10
+Write-Host "`n~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=`n" -ForegroundColor DarkGray
+
+$config_nvim = Ask-User "~ want my nvim config?"
+$config_git  = Ask-User "~ configure git?"
+$config_posh = Ask-User "~ what about posh-git?"
 
 Write-Section "setting up scoop !"
 
@@ -86,29 +147,43 @@ Get-Content "$PSScriptRoot/scoop/apps.txt" | ForEach-Object {
 
 Write-Rainbow "~ all finished with scoop"
 
-if (-not (Get-Module -ListAvailable posh-git)) {
-  Write-Section "adding posh-git"
-  Write-Rainbow "~ updating nuget for current user"
-  Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force *>&1 | Out-Null
-  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-  Write-Rainbow "~ installin posh-git module"
-  Install-Module posh-git -Scope CurrentUser -Force
-} else {
-  Write-Rainbow "~ you've already got posh-git available, nice !"
+if ($config_posh) {
+  Write-Section "[optional] posh-git"
+  if (-not (Get-Module -ListAvailable posh-git)) {
+    Write-Rainbow "~ updating nuget for current user"
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force *>&1 | Out-Null
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Write-Rainbow "~ installin posh-git module"
+    Install-Module posh-git -Scope CurrentUser -Force
+  } else {
+    Write-Rainbow "~ you've already got posh-git available, nice !"
+  }
 }
 
-Write-Section "initing lazygit config"
+if ($config_lazy) {
+  Write-Section "[optional] my lazygit config"
 
-if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
-  New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
-  Write-Rainbow "~ creating dir"
+  if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
+    New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
+    Write-Rainbow "~ creating dir"
+  }
+
+  Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
+  Write-Rainbow "~ added custom commands"
+  Write-Rainbow "  'C'        ->     to conventional commits"
+  Write-Rainbow "  'b'        ->     to prune deleted remotes"
 }
 
-Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
-Write-Rainbow "~ added custom commands"
-Write-Rainbow "  'C'        ->     to conventional commits"
-Write-Rainbow "  'b'        ->     to prune deleted remotes"
+if ($config_nvim) {
+  Write-Section "[optional] nvim config"
+  Write-Host "~ cloning !" -ForegroundColor Green
+  . $PSScriptRoot/nvim/config.ps1
+}
 
+if ($config_git) {
+  Write-Section "[optional] global git config"
+  . $PSScriptRoot/git/config.ps1
+}
 
 Write-Section "copying powershell profile !"
 
@@ -131,33 +206,17 @@ Write-Rainbow "    l        ->     list contents (long)"
 Write-Rainbow "    la       ->     list contents (including hidden files)"
 Write-Rainbow "    lsd      ->     list directories"
 
-Add-PoshGitToProfile
-
-Write-Rainbow "~ added posh-git import"
+if ($config_posh) {
+  Add-PoshGitToProfile
+  Write-Rainbow "~ added posh-git import"
+}
 
 $dotsourced = $MyInvocation.InvocationName -eq '.'
 
 if ($dotsourced) {
   . $PROFILE
   Write-Rainbow "~ reloaded profile"
-}
-
-Write-Section "[optional] nvim config"
-
-$ans = Read-Host "~ wanna use llywelwyn/.nvim config? (y/n)"
-if ($ans -eq '' -or $ans -match '^(y|yes)$') {
-  Write-Host "~ cloning !" -ForegroundColor Green
-  . $PSScriptRoot/nvim/config.ps1
-}
-
-Write-Section "[optional] global git config"
-
-$ans = Read-Host "~ wanna set up git? (y/n)"
-if ($ans -eq '' -or $ans -match '^(y|yes)$') {
-  . $PSScriptRoot/git/config.ps1
-}
-
-if (-not $dotsourced) {
+} else {
   Write-Section "you need to do one more step!!!"
   Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Red
   Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor DarkYellow
@@ -166,6 +225,7 @@ if (-not $dotsourced) {
   Write-Host "write '. `$PROFILE' to reload your profile manually" -ForegroundColor Magenta
 }
 
+Write-Host "~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=" -ForegroundColor DarkGray
 Write-Host @"
                                    _________
   and we're all done    /\_/\     / bye for \
@@ -174,4 +234,9 @@ Write-Host @"
   2025. lewis wynne
 
 "@ -ForegroundColor Magenta
+
+Write-Typewriter "ps. i added 'dotfiles' as a shortcut to get back here`n" -DelayMs 60
+
+Remove-Variable colIndex, allSelected -Scope Script -ErrorAction SilentlyContinue
+Remove-Variable ans, dotsourced, raw, apps, buckets, cols -ErrorAction SilentlyContinue
 
