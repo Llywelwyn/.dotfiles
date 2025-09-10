@@ -130,7 +130,6 @@ Write-Rainbow "    ls       ->     list contents (with colour)"
 Write-Rainbow "    l        ->     list contents (long)"
 Write-Rainbow "    la       ->     list contents (including hidden files)"
 Write-Rainbow "    lsd      ->     list directories"
-Write-Rainbow "    and wget, curl, and gurl"
 
 Add-PoshGitToProfile
 

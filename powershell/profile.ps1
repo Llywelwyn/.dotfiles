@@ -14,10 +14,6 @@ Set-Alias time Measure-Command
 Set-Alias vi nvim
 Set-Alias vim nvim
 
-if (Get-Command wget.exe -ErrorAction SilentlyContinue | Test-Path) {
-  rm alias:wget -ErrorAction SilentlyContinue
-}
-
 if (Get-Command ls.exe -ErrorAction SilentlyContinue | Test-Path) {
     rm alias:ls -ErrorAction SilentlyContinue
     ${function:ls} = { ls.exe --color @args }
@@ -27,12 +23,4 @@ if (Get-Command ls.exe -ErrorAction SilentlyContinue | Test-Path) {
 } else {
     ${function:la} = { ls -Force @args }
     ${function:lsd} = { Get-ChildItem -Directory -Force @args }
-}
-
-if (Get-Command curl.exe -ErrorAction SilentlyContinue | Test-Path) {
-    rm alias:curl -ErrorAction SilentlyContinue
-    ${function:curl} = { curl.exe @args }
-    ${function:gurl} = { curl --compressed @args }
-} else {
-    ${function:gurl} = { curl -TransferEncoding GZip }
 }
