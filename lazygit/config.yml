@@ -1,7 +1,12 @@
 customCommands:
+  - key: "b"
+    command: "git remote prune {{.SelectedRemote.Name}}"
+    context: "remotes"
+    loadingText: "Pruning..."
+    description: "prune deleted remote branches"
   - key: "C"
     command: 'git commit -m "{{ .Form.Type }}{{if .Form.Scopes}}({{ .Form.Scopes }}){{end}}{{if eq .Form.Breaking `yes`}}!{{end}}: {{ .Form.Description }}"'
-    description: "commit with commitizen"
+    description: "commit with conventional commits"
     context: "files"
     prompts:
       - type: "menu"
