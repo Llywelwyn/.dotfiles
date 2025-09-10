@@ -1,3 +1,5 @@
 adom
 nethack
+sil
 cataclysm-dda
+infraarcana
