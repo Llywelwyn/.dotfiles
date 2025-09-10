@@ -129,7 +129,7 @@ local keys = {
 	{
 		key = "Enter",
 		mods = "ALT",
-		action = "ToggleFullscreen",
+		action = "ToggleFullScreen",
 	},
 }
 
