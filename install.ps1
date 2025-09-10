@@ -5,13 +5,34 @@ Write-Host @"
    > ^ <  
 "@ -ForegroundColor Magenta
 
+function Write-Typewriter {
+    param(
+        [string]$Text,
+        [int]$DelayMs = 10  # milliseconds between each character
+    )
+
+    foreach ($char in $Text.ToCharArray()) {
+        Write-Host -NoNewline $char
+        Start-Sleep -Milliseconds $DelayMs
+    }
+    Write-Host ""  # newline at the end
+}
+
 function Write-Section($text) {
-  $width = 40 
-  Write-Host ""
-  Write-Host ("~=" * ($width/2)) -ForegroundColor DarkGray
-  Write-Host ("= " + $text.PadRight($width - 4) + " =") -ForegroundColor Green
-  Write-Host ("~=" * ($width/2)) -ForegroundColor DarkGray
-  Write-Host ""
+    $width = 40
+    Write-Host ""
+    Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
+
+    $textLength = $text.Length
+    $innerWidth = $width - 4  # space for "= " and " ="
+    $leftPadding = [math]::Floor(($innerWidth - $textLength) / 2)
+    $rightPadding = $innerWidth - $textLength - $leftPadding
+
+    $line = "= " + (" " * $leftPadding) + $text + (" " * $rightPadding) + " ="
+    Write-Typewriter $line
+
+    Write-Host ("~=" * ($width / 2)) -ForegroundColor DarkGray
+    Write-Host ""
 }
 
 $cols = @('Red', 'DarkYellow', 'Green', 'Blue', 'Magenta')
@@ -22,8 +43,6 @@ function Write-Rainbow($text) {
   Write-Host $text -ForegroundColor $col  
   $script:colIndex++
 }
-
-$env:DOTFILES = $PSScriptRoot
 
 Write-Section "setting up scoop !"
 
@@ -87,29 +106,31 @@ if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
 
 Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
 Write-Rainbow "~ added custom commands"
-Write-Rainbow "  'C'      ->   to conventional commits"
-Write-Rainbow "  'b'      ->   to prune deleted remotes"
+Write-Rainbow "  'C'        ->     to conventional commits"
+Write-Rainbow "  'b'        ->     to prune deleted remotes"
 
 
 Write-Section "copying powershell profile !"
 
 Copy-Item $PSScriptRoot/powershell/profile.ps1 $PROFILE -Force
+Add-Content -Path $PROFILE -Value "`nfunction dotfiles { Set-Location '$PSScriptRoot' }"
 
 Write-Rainbow "~ setting up aliases for nav"
-Write-Rainbow "    docs   ->   go to documents"
-Write-Rainbow "    dt     ->   go to desktop"
-Write-Rainbow "    dl     ->   go to downloads"
-Write-Rainbow "    nvimc  ->   go to nvim config"
-Write-Rainbow "    ..     ->   go up a dir (..., etc. to go up multiple)"
-Write-Rainbow "    ~      ->   go home"
+Write-Rainbow "    dotfiles ->     go to this dir"
+Write-Rainbow "    docs     ->     go to documents"
+Write-Rainbow "    dt       ->     go to desktop"
+Write-Rainbow "    dl       ->     go to downloads"
+Write-Rainbow "    nvimc    ->     go to nvim config"
+Write-Rainbow "    ..       ->     go up a dir (..., etc. to go up multiple)"
+Write-Rainbow "    ~        ->     go home"
 Write-Rainbow "~ bash aliases"
-Write-Rainbow "    time   ->   Measure-Command"
-Write-Rainbow "    vi,vim ->   nvim"
-Write-Rainbow "    ls     ->   list contents (with colour)"
-Write-Rainbow "    l      ->   list contents (long)"
-Write-Rainbow "    la     ->   list contents (including hidden files)"
-Write-Rainbow "    lsd    ->   list directories"
-Write-Rainbow "    also wget, curl, and gurl"
+Write-Rainbow "    time     ->     Measure-Command"
+Write-Rainbow "    vi, vim  ->     nvim"
+Write-Rainbow "    ls       ->     list contents (with colour)"
+Write-Rainbow "    l        ->     list contents (long)"
+Write-Rainbow "    la       ->     list contents (including hidden files)"
+Write-Rainbow "    lsd      ->     list directories"
+Write-Rainbow "    and wget, curl, and gurl"
 
 Add-PoshGitToProfile
 
@@ -122,7 +143,7 @@ if ($dotsourced) {
   Write-Rainbow "~ reloaded profile"
 }
 
-Write-Section "optional cool nvim config"
+Write-Section "[optional] nvim config"
 
 $ans = Read-Host "~ wanna use llywelwyn/.nvim config? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
@@ -130,7 +151,7 @@ if ($ans -eq '' -or $ans -match '^(y|yes)$') {
   . $PSScriptRoot/nvim/config.ps1
 }
 
-Write-Section "while im here lemme do ur git config"
+Write-Section "[optional] global git config"
 
 $ans = Read-Host "~ wanna set up git? (y/n)"
 if ($ans -eq '' -or $ans -match '^(y|yes)$') {
