@@ -126,6 +126,11 @@ local keys = {
 		mods = "CTRL",
 		action = wezterm.action.ActivateCopyMode,
 	},
+	{
+		key = "Enter",
+		mods = "ALT",
+		action = "ToggleFullscreen",
+	},
 }
 
 for i = 1, 5, 1 do
