@@ -1,3 +1,4 @@
+autohotkey
 coreutils
 curl
 dotnet-sdk
