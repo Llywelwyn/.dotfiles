@@ -4,6 +4,7 @@ dotnet-sdk
 fd
 FiraCode-NF
 fzf
+gh
 grep
 lazygit
 lua
