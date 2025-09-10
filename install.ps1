@@ -76,6 +76,16 @@ if (-not (Get-Module -ListAvailable posh-git)) {
   Write-Rainbow "~ you've already got posh-git available, nice !"
 }
 
+Write-Section "adding some lazygit custom cmds"
+
+if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
+  New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
+  Write-Rainbow "~ creating dir"
+}
+
+Copy-Item ./lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
+Write-Rainbow "~ copying over config"
+
 Write-Section "copying powershell profile !"
 
 Copy-Item ./powershell/profile.ps1 $PROFILE -Force
