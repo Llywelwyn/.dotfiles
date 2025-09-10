@@ -1,4 +1,4 @@
-<img width="1345" height="744" alt="image" src="https://github.com/user-attachments/assets/282ec0cf-a96b-49db-9652-9c5416258fdb" />
+<img width="1340" height="738" alt="image" src="https://github.com/user-attachments/assets/b19b9190-5f2f-4660-a6e1-c3672513358e" />
 
 ```sh
 # to use these dotfiles, clone and run install.ps1
