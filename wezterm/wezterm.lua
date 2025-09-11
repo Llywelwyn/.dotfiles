@@ -41,5 +41,6 @@ end
 config.colors = theme.colors()
 config.window_frame = theme.window_frame()
 config.window_frame.font_size = 8
+config.window_background_opacity = 0.8
 
 return config
