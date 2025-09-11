@@ -127,6 +127,11 @@ local keys = {
 		action = wezterm.action.ActivateCopyMode,
 	},
 	{
+		key = "v",
+		mods = "CTRL",
+		action = wezterm.action.PasteFrom("Clipboard"),
+	},
+	{
 		key = "r",
 		mods = "CTRL",
 		action = wezterm.action.ReloadConfiguration,
