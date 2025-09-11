@@ -17,4 +17,5 @@ python
 ripgrep
 terminal-icons
 wezterm-nightly
+zoxide
 7zip

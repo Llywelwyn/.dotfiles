@@ -103,6 +103,7 @@ Write-Host "`n~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=`n" -ForegroundColor DarkG
 
 Write-Host "[y]es  -  [n]o  -  [a]ccept all`n" -ForegroundColor Green
 $config_wez = Ask-User "~ ctrl+alt+w to open wezterm?"
+$config_zoxide = Ask-User "~ replace cd wth zoxide?"
 $config_nvim = Ask-User "~ want my nvim config?"
 $config_git  = Ask-User "~ configure git?"
 $config_posh = Ask-User "~ what about posh-git?"
@@ -191,6 +192,7 @@ if ($config_wez) {
   . $PSScriptRoot/wezterm/postinstall.ps1 
 }
 
+
 if ($config_posh) {
   Write-Section "[optional] posh-git"
   if (-not (Get-Module -ListAvailable posh-git)) {
@@ -233,6 +235,15 @@ Write-Section "copying powershell profile !"
 
 Copy-Item $PSScriptRoot/powershell/profile.ps1 $PROFILE -Force
 Add-Content -Path $PROFILE -Value "`nfunction dotfiles { Set-Location '$PSScriptRoot' }"
+
+if ($config_zoxide) {
+  Write-Rainbow "~ adding zoxide"
+  Write-Rainbow "    cd       ->     untouched"
+  Add-Content -Path $PROFILE -Value "`nInvoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })"
+} else {
+  Write-Rainbow "    cd       ->     zoxide"
+  Add-Content -Path $PROFILE -Value "`nInvoke-Expression (& { (zoxide init powershell | Out-String) })"
+}
 
 Write-Rainbow "~ setting up aliases for nav"
 Write-Rainbow "    dotfiles ->     go to this dir"
