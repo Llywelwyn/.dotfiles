@@ -24,3 +24,5 @@ if (Get-Command ls.exe -ErrorAction SilentlyContinue | Test-Path) {
     ${function:la} = { ls -Force @args }
     ${function:lsd} = { Get-ChildItem -Directory -Force @args }
 }
+
+altsnap
