@@ -10,14 +10,13 @@ config.font = wezterm.font("FiraCode Nerd Font", {})
 config.line_height = 1.2
 
 config.window_decorations = "RESIZE"
-config.initial_rows = 30
+config.initial_rows = 25
 config.initial_cols = 80
 
 config.hide_tab_bar_if_only_one_tab = true
 config.show_close_tab_button_in_tabs = false
 config.show_new_tab_button_in_tab_bar = false
 
--- Rounded tab corners
 config.use_fancy_tab_bar = true
 config.tab_max_width = 25
 
