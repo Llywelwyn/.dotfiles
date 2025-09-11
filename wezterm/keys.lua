@@ -127,6 +127,11 @@ local keys = {
 		action = wezterm.action.ActivateCopyMode,
 	},
 	{
+		key = "r",
+		mods = "CTRL",
+		action = wezterm.action.ReloadConfiguration,
+	},
+	{
 		key = "Enter",
 		mods = "ALT",
 		action = "ToggleFullScreen",
