@@ -179,6 +179,13 @@ if (-not (Test-Path $HOME/.config)) {
   Write-Rainbow "~ creating $HOME/.config dir"
 }
 
+if (-not (Test-Path $HOME/.config/jrnl)) {
+  New-Item -ItemType Directory -Path $Home/.config/jrnl | Out-Null
+  Write-Rainbow "~ creating $HOME/.config/jrnl dir"
+}
+
+Copy-Item $PSScriptRoot/jrnl/jrnl.yaml $HOME/.config/jrnl/jrnl.yaml -Force
+
 if (-not (Test-Path $HOME/.config/wezterm)) {
   New-Item -ItemType Directory -Path $HOME/.config/wezterm | Out-Null
   Write-Rainbow "~ creating $HOME/.config/wezterm dir"
