@@ -169,7 +169,7 @@ if ($config_games) {
   }
 }
 
-Write-Rainbow "~ all finished with scoop"
+Write-Rainbow "~ nearly done. some configs and extra bits"
 
 if (-not (Test-Path $HOME/.config)) {
   New-Item -ItemType Directory -Path $HOME/.config | Out-Null
@@ -191,7 +191,6 @@ if ($config_wez) {
   Write-Rainbow "~ w00t! ctrl+alt+w to wezterm!"
   . $PSScriptRoot/wezterm/postinstall.ps1 
 }
-
 
 if ($config_posh) {
   Write-Section "[optional] posh-git"
