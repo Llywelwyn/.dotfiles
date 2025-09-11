@@ -171,6 +171,9 @@ if ($config_games) {
 
 Write-Rainbow "~ nearly done. some configs and extra bits"
 
+pipx install jrnl
+pipx ensurepath
+
 if (-not (Test-Path $HOME/.config)) {
   New-Item -ItemType Directory -Path $HOME/.config | Out-Null
   Write-Rainbow "~ creating $HOME/.config dir"
