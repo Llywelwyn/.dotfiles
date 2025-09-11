@@ -41,5 +41,9 @@ config.colors = theme.colors()
 config.window_frame = theme.window_frame()
 config.window_frame.font_size = 8
 config.window_background_opacity = 0.8
+config.text_background_opacity = 0.4
+config.win32_system_backdrop = "Acrylic"
+
+config.inactive_pane_hsb = { hue = 1.0, saturation = 0.7, brightness = 0.7 }
 
 return config
