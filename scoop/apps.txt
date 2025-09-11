@@ -1,4 +1,3 @@
-altsnap
 autohotkey
 coreutils
 curl
