@@ -206,19 +206,17 @@ if ($config_posh) {
   }
 }
 
-if ($config_lazy) {
-  Write-Section "[optional] my lazygit config"
+Write-Section "lazygit config"
 
-  if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
-    New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
-    Write-Rainbow "~ creating dir"
-  }
-
-  Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
-  Write-Rainbow "~ added custom commands"
-  Write-Rainbow "  'C'        ->     to conventional commits"
-  Write-Rainbow "  'b'        ->     to prune deleted remotes"
+if (-not (Test-Path $env:LOCALAPPDATA/lazygit)) {
+  New-Item -ItemType Directory -Path $env:LOCALAPPDATA/lazygit | Out-Null
+  Write-Rainbow "~ creating dir"
 }
+
+Copy-Item $PSScriptRoot/lazygit/config.yml $env:LOCALAPPDATA/lazygit/config.yml -Force
+Write-Rainbow "~ added custom commands"
+Write-Rainbow "  'C'        ->     to conventional commits"
+Write-Rainbow "  'b'        ->     to prune deleted remotes"
 
 if ($config_nvim) {
   Write-Section "[optional] nvim config"
