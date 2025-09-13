@@ -154,6 +154,7 @@ if ($config_games) {
   Write-Section "[optional] my fave games"
   if (-not ($buckets -contains "games")) {
     Write-Rainbow "~ adding bucket: games"
+    scoop bucket add games
   } else {
     Write-Rainbow "~ found bucket: games"
   }
