@@ -60,24 +60,24 @@ config.colors = {
 	cursor_border = theme.palette.oldWhite,
 	selection_fg = theme.palette.oldWhite,
 	ansi = {
-		theme.palette.oldWhite,
-		theme.palette.springBlue,
-		theme.palette.surimiOrange,
-		theme.palette.fujiWhite,
-		theme.palette.surimiOrange, -- Cmdline
-		theme.palette.peachRed, -- Donate button
-		theme.palette.waveAqua2,
-		theme.palette.fujiWhite,
+		theme.palette.carpYellow, -- black
+		theme.palette.springBlue, -- red
+		theme.palette.springGreen, -- green
+		theme.palette.oniViolet, -- yellow
+		theme.palette.surimiOrange, -- blue / Cmdline
+		theme.palette.fujiGray, -- magenta / Donate button
+		theme.palette.waveAqua2, -- cyan
+		theme.palette.fujiWhite, -- white
 	},
 	brights = {
-		theme.palette.oldWhite,
-		theme.palette.crystalBlue, -- branches in git log?
-		theme.palette.springGreen, -- strings
-		theme.palette.crystalBlue, -- command
-		theme.palette.surimiOrange, -- directories
-		theme.palette.boatYellow2, -- current directory
-		theme.palette.surimiOrange, -- branch name
-		theme.palette.boatYellow2,
+		theme.palette.oldWhite, -- black
+		theme.palette.springBlue, -- red
+		theme.palette.springGreen, -- green
+		theme.palette.oniViolet, -- yellow
+		theme.palette.surimiOrange, -- blue / Cmdline
+		theme.palette.fujiGray, -- magenta / Donate button
+		theme.palette.waveAqua2, -- cyan
+		theme.palette.fujiWhite, -- white
 	},
 }
 
