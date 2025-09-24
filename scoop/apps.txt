@@ -11,7 +11,9 @@ grep
 lazygit
 lua
 luarocks
+main/mingw
 neovim
+nodejs
 pwsh
 python
 ripgrep
